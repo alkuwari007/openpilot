@@ -338,6 +338,20 @@ class TestOnroad(unittest.TestCase):
     expected = EVENTS[car.CarEvent.EventName.startup][ET.PERMANENT].alert_text_1
     self.assertEqual(startup_alert, expected, "wrong startup alert")
 
+  def test_engagable(self):
+    no_entries = Counter()
+    for m in self.service_msgs['carEvents']:
+      for evt in m.carEvents:
+        if evt.noEntry:
+          no_entries[evt.name] += 1
+    print("no entries")
+    print(no_entries)
+
+    cnt = sum([1 for m in self.service_msgs['controlsState'] if m.controlsState.engageable])
+    et = (cnt / service_list['controlsState'].frequency)
+    print("et", et)
+    assert et > 30.
+
 
 if __name__ == "__main__":
   unittest.main()
